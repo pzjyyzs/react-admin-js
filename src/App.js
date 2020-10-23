@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.scss';
 import { HashRouter, Switch, Route } from 'react-router-dom';
 import Home from './views/Home';
 import About from './views/About';
