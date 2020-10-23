@@ -8,8 +8,8 @@ function App() {
   return (
     <HashRouter>
       <Switch>
-        <Route component={Home} exact path='/'>home</Route>
-        <Route component={About} path='/about'>about</Route>
+        <Route component={Home} exact path='/' />
+        <Route component={About} path='/about' />
       </Switch>
     </HashRouter>
   )

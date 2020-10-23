@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Button } from 'antd';
+import './aaa.scss'
 class Home extends Component {
     constructor() {
         super()
@@ -6,7 +8,12 @@ class Home extends Component {
     }
 
     render() {
-        return <div>home</div>
+        return (
+            <Fragment>
+                321
+                <Button>123</Button>
+            </Fragment>
+        )
     }
 }
 
