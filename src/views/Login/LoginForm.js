@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Input,Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined }  from '@ant-design/icons';
+import { validate_password } from '../../utils/validate';
+import { Login } from '../../api/account';
 class LoginForm extends Component {
     constructor(props) {
         super(props);
@@ -8,6 +10,12 @@ class LoginForm extends Component {
     }
 
     onFinish = values => {
+        Login().then(response => {
+            console.log(response)
+            console.log('=====')
+        }).catch(error => {
+            console.log(error)
+        })
         console.log(values)
     }
 
@@ -28,13 +36,38 @@ class LoginForm extends Component {
                         initialValues={{ remember: true }}
                         onFinish={this.onFinish}
                     >
-                        <Form.Item name='username' rules={[{ required: true, message: 'Please input your Username!'}]} >
+                        <Form.Item name='username' rules={
+                            [
+                                { required: true, message: '邮箱不能为空'},
+                                { type: 'email', message: '邮箱格式不正确'},
+                            ]
+                        } >
                             <Input prefix={<UserOutlined className='site-form-item-icon' />} placeholder='Username' />
                         </Form.Item>
-                        <Form.Item name='password' rules={[{ required: true, message: 'Please input your Username!' }]}>
+                        <Form.Item name='password' rules={
+                            [
+                                { required: true, message: '密码不能为空' },
+                               /*  { min: 6, message: '不能小于6位'},
+                                { max: 20, message: '不能大于20位'},
+                                ({ getFieldValue }) => ({
+                                    validator(rule, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+
+                                        return Promise.reject('error')
+                                    }
+                                })*/ 
+                                { pattern: validate_password, message: '字母+数字，6-20'}
+                            ]
+                        }>
                             <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Password' />
                         </Form.Item>
-                        <Form.Item name='code' rules={[{ required: true, message: 'Please input your Code!' }]}>
+                        <Form.Item name='code' rules={
+                            [
+                                { required: true, message: '验证码不能为空' }
+                            ]
+                        }>
                             <Row gutter={13}>
                                 <Col span={15}>
                                     <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Code' />
