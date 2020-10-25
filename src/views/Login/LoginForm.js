@@ -1,28 +1,64 @@
 import React, { Component } from 'react';
-import { Form, Input,Button, Row, Col } from 'antd';
+import { Form, Input,Button, Row, Col, message } from 'antd';
 import { UserOutlined, UnlockOutlined }  from '@ant-design/icons';
 import { validate_password } from '../../utils/validate';
-import { Login } from '../../api/account';
+import { Login, GetCode } from '../../api/account';
 class LoginForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            username: '',
+            codeButtonLoading: false,
+            codeButtonText: '获取验证码'
+        }
     }
 
     onFinish = values => {
         Login().then(response => {
-            console.log(response)
-            console.log('=====')
+           
         }).catch(error => {
-            console.log(error)
+           
         })
-        console.log(values)
+    }
+
+    getCode = () => {
+        
+        if (!this.state.username) {
+            message.warning('用户名不能为空');
+            return false;
+        }
+        this.setState({
+            ...this.state,
+            codeButtonLoading: true,
+            codeButtonText: '发送中'
+        })
+        const requestData = {
+            username: this.state.username,
+            module: "login"
+        }
+        GetCode(requestData).then(response => {
+
+        }).catch(error => {
+            this.setState({
+                ...this.state,
+                codeButtonLoading: false,
+                codeButtonText: '重新获取'
+            })
+        })
+    }
+
+    inputChange = (e) => {
+        let value = e.target.value;
+        this.setState({
+            username: value
+        })
     }
 
     toggleForm = () => {
         this.props.switchForm('rester');
     }
     render() {
+        const { username, codeButtonLoading, codeButtonText } = this.state;
         return (
             <div>
                 <div className='form-header'>
@@ -42,7 +78,7 @@ class LoginForm extends Component {
                                 { type: 'email', message: '邮箱格式不正确'},
                             ]
                         } >
-                            <Input prefix={<UserOutlined className='site-form-item-icon' />} placeholder='Username' />
+                            <Input  value={username} onChange={this.inputChange} prefix={<UserOutlined className='site-form-item-icon' />} placeholder='Username' />
                         </Form.Item>
                         <Form.Item name='password' rules={
                             [
@@ -73,7 +109,7 @@ class LoginForm extends Component {
                                     <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Code' />
                                 </Col>
                                 <Col span={9}>
-                                    <Button type='danger' htmlType='submit' className="login-form-button" block>获得验证码</Button>
+                                    <Button type='danger'loading={codeButtonLoading} htmlType='submit' className="login-form-button" block onClick={this.getCode}>{codeButtonText}</Button>
                                 </Col>
                             </Row>
                         </Form.Item>
