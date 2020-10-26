@@ -9,6 +9,7 @@ class LoginForm extends Component {
         this.state = {
             username: '',
             codeButtonLoading: false,
+            codeButtonDisabled: false,
             codeButtonText: '获取验证码'
         }
     }
@@ -37,7 +38,7 @@ class LoginForm extends Component {
             module: "login"
         }
         GetCode(requestData).then(response => {
-
+            this.countDown();
         }).catch(error => {
             this.setState({
                 ...this.state,
@@ -57,8 +58,37 @@ class LoginForm extends Component {
     toggleForm = () => {
         this.props.switchForm('rester');
     }
+
+    countDown = () => {
+        let time = null;
+        let sec = 60;
+        this.setState({
+            ...this.state,
+            codeButtonLoading: false,
+            codeButtonDisabled: true,
+            codeButtonText: `${sec}s`
+        })
+
+        time = setInterval(() => {
+            sec--;
+            if (sec <=0) {
+                this.setState({
+                    ...this.state,
+                    codeButtonText:'重新获取',
+                    codeButtonDisabled: false
+                })
+                clearInterval(time)
+                return false
+            }
+            this.setState({
+                ...this.state,
+                codeButtonText:`${sec}s`
+            })
+        }, 1000)
+    }
+
     render() {
-        const { username, codeButtonLoading, codeButtonText } = this.state;
+        const { username, codeButtonLoading, codeButtonText, codeButtonDisabled } = this.state;
         return (
             <div>
                 <div className='form-header'>
@@ -109,7 +139,7 @@ class LoginForm extends Component {
                                     <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Code' />
                                 </Col>
                                 <Col span={9}>
-                                    <Button type='danger'loading={codeButtonLoading} htmlType='submit' className="login-form-button" block onClick={this.getCode}>{codeButtonText}</Button>
+                                    <Button type='danger' disabled={codeButtonDisabled} loading={codeButtonLoading} htmlType='submit' className="login-form-button" block onClick={this.getCode}>{codeButtonText}</Button>
                                 </Col>
                             </Row>
                         </Form.Item>
