@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { Form, Input,Button, Row, Col, message } from 'antd';
+import { Form, Input,Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined }  from '@ant-design/icons';
 import { validate_password } from '../../utils/validate';
-import { Login, GetCode } from '../../api/account';
+import { Login } from '../../api/account';
+import Code from '../../components/code/index';
 class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: '',
-            codeButtonLoading: false,
-            codeButtonDisabled: false,
-            codeButtonText: '获取验证码'
+            username: ''
         }
     }
 
@@ -19,32 +17,6 @@ class LoginForm extends Component {
            
         }).catch(error => {
            
-        })
-    }
-
-    getCode = () => {
-        
-        if (!this.state.username) {
-            message.warning('用户名不能为空');
-            return false;
-        }
-        this.setState({
-            ...this.state,
-            codeButtonLoading: true,
-            codeButtonText: '发送中'
-        })
-        const requestData = {
-            username: this.state.username,
-            module: "login"
-        }
-        GetCode(requestData).then(response => {
-            this.countDown();
-        }).catch(error => {
-            this.setState({
-                ...this.state,
-                codeButtonLoading: false,
-                codeButtonText: '重新获取'
-            })
         })
     }
 
@@ -59,36 +31,8 @@ class LoginForm extends Component {
         this.props.switchForm('rester');
     }
 
-    countDown = () => {
-        let time = null;
-        let sec = 60;
-        this.setState({
-            ...this.state,
-            codeButtonLoading: false,
-            codeButtonDisabled: true,
-            codeButtonText: `${sec}s`
-        })
-
-        time = setInterval(() => {
-            sec--;
-            if (sec <=0) {
-                this.setState({
-                    ...this.state,
-                    codeButtonText:'重新获取',
-                    codeButtonDisabled: false
-                })
-                clearInterval(time)
-                return false
-            }
-            this.setState({
-                ...this.state,
-                codeButtonText:`${sec}s`
-            })
-        }, 1000)
-    }
-
     render() {
-        const { username, codeButtonLoading, codeButtonText, codeButtonDisabled } = this.state;
+        const { username } = this.state;
         return (
             <div>
                 <div className='form-header'>
@@ -139,7 +83,8 @@ class LoginForm extends Component {
                                     <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Code' />
                                 </Col>
                                 <Col span={9}>
-                                    <Button type='danger' disabled={codeButtonDisabled} loading={codeButtonLoading} htmlType='submit' className="login-form-button" block onClick={this.getCode}>{codeButtonText}</Button>
+                                   {/*  <Button type='danger' disabled={codeButtonDisabled} loading={codeButtonLoading} htmlType='submit' className="login-form-button" block onClick={this.getCode}>{codeButtonText}</Button> */}
+                                    <Code username={username}></Code>
                                 </Col>
                             </Row>
                         </Form.Item>
