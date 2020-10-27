@@ -8,7 +8,8 @@ class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: ''
+            username: '',
+            module: 'login'
         }
     }
 
@@ -32,7 +33,7 @@ class LoginForm extends Component {
     }
 
     render() {
-        const { username } = this.state;
+        const { username, module } = this.state;
         return (
             <div>
                 <div className='form-header'>
@@ -71,7 +72,7 @@ class LoginForm extends Component {
                                 { pattern: validate_password, message: '字母+数字，6-20'}
                             ]
                         }>
-                            <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Password' />
+                            <Input type='password' prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Password' />
                         </Form.Item>
                         <Form.Item name='code' rules={
                             [
@@ -83,8 +84,7 @@ class LoginForm extends Component {
                                     <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Code' />
                                 </Col>
                                 <Col span={9}>
-                                   {/*  <Button type='danger' disabled={codeButtonDisabled} loading={codeButtonLoading} htmlType='submit' className="login-form-button" block onClick={this.getCode}>{codeButtonText}</Button> */}
-                                    <Code username={username}></Code>
+                                    <Code username={username} module={module}></Code>
                                 </Col>
                             </Row>
                         </Form.Item>

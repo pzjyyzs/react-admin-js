@@ -7,10 +7,11 @@ class Code extends Component {
     constructor(props){
         super(props);
         this.state = {
-            username: '',
+            username: props.username,
             codeButtonLoading: false,
             codeButtonDisabled: false,
-            codeButtonText: "获取验证码"
+            codeButtonText: "获取验证码",
+            module: props.module
         }
     };
 
@@ -37,9 +38,10 @@ class Code extends Component {
         })
         const requestData = {
             username: this.state.username,
-            module: "login"
+            module: this.state.module
         }
         GetCode(requestData).then(response => {
+            message.success(response.data.message)
             this.countDown();
         }).catch(error => {
             this.setState({
