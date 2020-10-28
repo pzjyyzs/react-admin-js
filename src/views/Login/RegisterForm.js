@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Input,Button, Row, Col } from 'antd';
+import { Form, Input,Button, Row, Col, message } from 'antd';
+import { UserOutlined, UnlockOutlined }  from '@ant-design/icons';
+import CryptoJs from 'crypto-js';
 import Code from '../../components/code/index';
 import { Register } from  '../../api/account';
-import { UserOutlined, UnlockOutlined }  from '@ant-design/icons';
 class RegisterForm extends Component {
     constructor(props){
         super(props)
@@ -17,12 +18,16 @@ class RegisterForm extends Component {
     onFinish = values => {
         const requestData = {
             username: this.state.username,
-            password: this.state.password,
+            password: CryptoJs.MD5(this.state.password).toString(),
             code: this.state.code
         }
-        Register(requestData).then(data => {
-
-        }).catch(() => {
+        Register(requestData).then(response => {
+            const data = response.data
+            message.success(data.message)
+            if (data.resCode === 0) {
+                this.toggleForm()
+            }
+        }).catch(error => {
 
         })
     }

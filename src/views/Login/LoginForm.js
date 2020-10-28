@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input,Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined }  from '@ant-design/icons';
+import CryptoJs from 'crypto-js';
 import { validate_password } from '../../utils/validate';
 import { Login } from '../../api/account';
 import Code from '../../components/code/index';
@@ -9,22 +10,54 @@ class LoginForm extends Component {
         super(props);
         this.state = {
             username: '',
-            module: 'login'
+            password: '',
+            code: '',
+            module: 'login',
+            loading: false
         }
     }
 
-    onFinish = values => {
-        Login().then(response => {
-           
+    onFinish = () => {
+        const requestData = {
+            username: this.state.username,
+            password: CryptoJs.MD5(this.state.password).toString(),
+            code: this.state.code
+        }
+        this.setState({
+            loading: true
+        })
+        Login(requestData).then(response => {
+           this.setState({
+               loading: false
+           })
         }).catch(error => {
-           
+            this.setState({
+                loading: false
+            })
         })
     }
 
-    inputChange = (e) => {
+    inputChangeUsername = (e) => {
         let value = e.target.value;
         this.setState({
+            ...this.state,
             username: value
+        })
+    }
+
+    inputChangePassword = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            password: value
+        })
+    }
+
+    inputChangeCode = (e) => {
+        let value = e.target.value;
+        this.setState({
+            ...this.state,
+            code: value
         })
     }
 
@@ -33,7 +66,7 @@ class LoginForm extends Component {
     }
 
     render() {
-        const { username, module } = this.state;
+        const { username, module, loading } = this.state;
         return (
             <div>
                 <div className='form-header'>
@@ -53,7 +86,7 @@ class LoginForm extends Component {
                                 { type: 'email', message: '邮箱格式不正确'},
                             ]
                         } >
-                            <Input  value={username} onChange={this.inputChange} prefix={<UserOutlined className='site-form-item-icon' />} placeholder='Username' />
+                            <Input  value={username} onChange={this.inputChangeUsername} prefix={<UserOutlined className='site-form-item-icon' />} placeholder='Username' />
                         </Form.Item>
                         <Form.Item name='password' rules={
                             [
@@ -72,7 +105,7 @@ class LoginForm extends Component {
                                 { pattern: validate_password, message: '字母+数字，6-20'}
                             ]
                         }>
-                            <Input type='password' prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Password' />
+                            <Input type='password' onChange={this.inputChangePassword} prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Password' />
                         </Form.Item>
                         <Form.Item name='code' rules={
                             [
@@ -81,7 +114,7 @@ class LoginForm extends Component {
                         }>
                             <Row gutter={13}>
                                 <Col span={15}>
-                                    <Input prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Code' />
+                                    <Input onChange={this.inputChangeCode} prefix={<UnlockOutlined classID='site-form-item-icon' />} placeholder='Code' />
                                 </Col>
                                 <Col span={9}>
                                     <Code username={username} module={module}></Code>
@@ -89,7 +122,7 @@ class LoginForm extends Component {
                             </Row>
                         </Form.Item>
                         <Form.Item>
-                            <Button type='primary' htmlType='submit' className="login-form-button" block>登录</Button>
+                            <Button type='primary'loading={loading} htmlType='submit' className="login-form-button" block>登录</Button>
                         </Form.Item>
                     </Form>
                 </div>
