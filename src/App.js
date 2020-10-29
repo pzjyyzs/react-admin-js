@@ -1,14 +1,16 @@
 import React from 'react';
-import { HashRouter, Switch, Route } from 'react-router-dom';
+import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import Login from './views/Login/index';
+import Index from './views/index/Index';
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Switch>
+        <Route component={Index} exact path='/index' />
         <Route component={Login} exact path='/' />
       </Switch>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 

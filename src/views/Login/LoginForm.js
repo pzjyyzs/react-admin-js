@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Form, Input,Button, Row, Col } from 'antd';
 import { UserOutlined, UnlockOutlined }  from '@ant-design/icons';
 import CryptoJs from 'crypto-js';
@@ -30,6 +31,7 @@ class LoginForm extends Component {
            this.setState({
                loading: false
            })
+           this.props.history.push('/index')
         }).catch(error => {
             this.setState({
                 loading: false
@@ -131,4 +133,4 @@ class LoginForm extends Component {
     }
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);
