@@ -8,8 +8,8 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route component={Index} exact path='/index' />
-        <PrivateRouter component={Login} exact path='/' />
+        <Route component={Login} exact path='/' />
+        <PrivateRouter component={Index} path='/index' />
       </Switch>
     </BrowserRouter>
   )

@@ -4,9 +4,8 @@ import service from '../utils/request';
 export function Login(data) {
     return service.request({
         url: '/login/',
-        method: '',
-       /*  data: data,
-        params: data */
+        method: 'post',
+        data
     })
 }
 

@@ -1,4 +1,3 @@
-const tokenAdmin = 'adminToken';
 export function setToken(name, value) {
     sessionStorage.setItem(name, value)
 }

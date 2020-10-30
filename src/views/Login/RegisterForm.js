@@ -28,7 +28,9 @@ class RegisterForm extends Component {
                 this.toggleForm()
             }
         }).catch(error => {
-
+            this.setState({
+                loading: false
+            })
         })
     }
 
