@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 
-class UserIndex extends Component {
+class UserList extends Component {
     constructor(props) {
         super(props)
         this.state = {}
-        console.log('123')
     }
     render() {
         return (
@@ -15,4 +14,4 @@ class UserIndex extends Component {
     }
 }
 
-export default UserIndex;
+export default UserList;
