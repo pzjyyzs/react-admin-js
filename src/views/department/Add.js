@@ -13,34 +13,63 @@ class DepartmentAdd extends Component {
                 wrapperCol: {
                     span: 20
                 }
-            }
+            },
+            loading: false
         }
+        this.form = React.createRef();
     }
 
     onSubmit = (value) => {
+
+        if(!value.name) {
+            message.error('部门名称不能为空')
+            return false
+        }
+
+        if (!value.number || value.number === 0) {
+            message.error('人员数量不能为空')
+            return false
+        }
+        this.setState({
+            ...this.state,
+            loading: true
+        })
+        console.log(this.form)
         addDepartment(value).then(response => {
             const data = response.data;
             message.info(data.message)
+            this.setState({
+                ...this.state,
+                loading: false
+            })
+           
+            this.form.current.resetFields();
         }).catch(error => {
-
+            message.error(error)
+            this.setState({
+                ...this.state,
+                loading: false
+            })
         })
     }
 
     render() {
-        const {formLayout} = this.state; 
+        const {formLayout, loading} = this.state; 
         return (
-            <Form 
+            <Form
+                ref={this.form}
                 {...formLayout}
+                initialValues={{ status: true, number: 0}}
                 onFinish={this.onSubmit}
             >
                 <Form.Item label='部门名称' name='name'>
                    <Input />
                 </Form.Item>
                 <Form.Item label='人员数量' name='number'>
-                    <InputNumber defaultValue={0} />
+                    <InputNumber />
                 </Form.Item>
                 <Form.Item label='禁启用' name='status'>
-                    <Radio.Group defaultValue={true}>
+                    <Radio.Group >
                         <Radio value={true}>启用</Radio>
                         <Radio value={false}>禁用</Radio>
                     </Radio.Group>
@@ -49,7 +78,7 @@ class DepartmentAdd extends Component {
                     <Input.TextArea />
                </Form.Item>
                <Form.Item>
-                   <Button type='primary' htmlType='submit'>确定</Button>
+                   <Button loading={loading} type='primary' htmlType='submit'>确定</Button>
                </Form.Item>
             </Form>
         );

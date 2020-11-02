@@ -15,7 +15,6 @@ class ContainerMenu extends Component {
             <Switch>
                 {
                     Components.map(item => {
-                        console.log(item)
                         return <PrivateRouter exact key={item.path} path={item.path} component={item.component} />
                     })
                 }

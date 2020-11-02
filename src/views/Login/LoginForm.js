@@ -6,7 +6,7 @@ import CryptoJs from 'crypto-js';
 import { validate_password } from '../../utils/validate';
 import { Login } from '../../api/account';
 import Code from '../../components/code/index';
-import { setToken } from './../../utils/session';
+import { setToken } from './../../utils/cookies';
 class LoginForm extends Component {
     constructor(props) {
         super(props);
@@ -34,6 +34,7 @@ class LoginForm extends Component {
            })
            const data = response.data.data
            setToken('adminToken',data.token)
+           setToken('username', data.username)
            this.props.history.push('/index')
         }).catch(error => {
             this.setState({

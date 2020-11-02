@@ -31,7 +31,7 @@ const router = [
         ]
     },
     {
-        title: '部门管理',
+        title: '职位管理',
         icon: 'edit',
         key: '/home/entry',
         children: [
