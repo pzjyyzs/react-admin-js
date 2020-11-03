@@ -34,7 +34,6 @@ class DepartmentAdd extends Component {
             ...this.state,
             loading: true
         })
-        console.log(this.form)
         addDepartment(value).then(response => {
             const data = response.data;
             message.info(data.message)

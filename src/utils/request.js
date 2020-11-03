@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import axios from 'axios';  
 import { getToken } from './cookies';
 
@@ -16,6 +17,12 @@ service.interceptors.request.use(function(config) {
 })
 
 service.interceptors.response.use(function (response) {
+    const data = response.data
+    if (data.resCode !== 0) {
+        message.info(data.message)
+        return  Promise.reject(response)
+    }
+
     return response
 }, function (error) {
     return Promise.reject(error)
