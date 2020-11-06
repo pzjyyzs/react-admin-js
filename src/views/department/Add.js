@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, InputNumber, Radio, message} from 'antd';
 
-import { addDepartment } from '../../api/department';
+import { addDepartment, departmentDetail, departmentEdit } from '../../api/department';
 class DepartmentAdd extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +19,27 @@ class DepartmentAdd extends Component {
         this.form = React.createRef();
     }
 
+    componentWillMount() {
+        if (this.props.location.state) {
+            this.setState({
+                id: this.props.location.state.id
+            })
+        }
+    }
+
+    componentDidMount() {
+        console.log(this.props.location.state.name)
+        this.getDetail()
+    }
+
+    getDetail = () => {
+        if (!this.props.location.state) return false;
+        const id = this.props.location.state.id;
+        departmentDetail({ id }).then(response => {
+            this.form.current.setFieldsValue(response.data.data)
+        })
+    }
+
     onSubmit = (value) => {
 
         if(!value.name) {
@@ -34,6 +55,11 @@ class DepartmentAdd extends Component {
             ...this.state,
             loading: true
         })
+      
+        this.state.id ? this.onEdit(value) : this.onAdd(value)
+    }
+
+    onAdd = (value) => {
         addDepartment(value).then(response => {
             const data = response.data;
             message.info(data.message)
@@ -49,6 +75,16 @@ class DepartmentAdd extends Component {
                 ...this.state,
                 loading: false
             })
+        })
+    }
+
+    onEdit = (value) => {
+        const requestData = value;
+        requestData.id = this.state.id;
+        departmentEdit(requestData).then(response => {
+
+        }).catch(error => {
+            
         })
     }
 

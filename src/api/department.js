@@ -23,3 +23,27 @@ export function deleteItem(data) {
         data
     })
 }
+
+export function changeStatus(data) {
+    return service.request({
+        url: '/department/status/',
+        method: 'post',
+        data
+    })
+}
+
+export function departmentDetail(data) {
+    return service.request({
+        url: '/department/detailed/',
+        method: 'post',
+        data
+    })
+}
+
+export function departmentEdit(data) {
+    return service.request({
+        url: '/department/edit',
+        method: 'post',
+        data
+    })
+}

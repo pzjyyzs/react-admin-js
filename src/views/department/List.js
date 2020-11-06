@@ -1,6 +1,7 @@
-import { Button, Form, Input, Switch, Table, message } from 'antd';
+import { Button, Form, Input, Switch, Table, message, Modal } from 'antd';
 import React, { Component } from 'react';
-import { getList, deleteItem } from '../../api/department';
+import { Link } from 'react-router-dom';
+import { getList, deleteItem, changeStatus } from '../../api/department';
 
 class DepartmentList extends Component {
     constructor(props){
@@ -9,14 +10,21 @@ class DepartmentList extends Component {
             pageNumber: 1,
             pageSize: 10,
             keyWord: '',
+            id: '',
             selectedRowKeys: [],
+            visible: false,
             columns: [
                 { title: '部门名称', dataIndex: 'name', key: 'name'},
                 { 
                     title: '禁启用', 
                     dataIndex: 'status', 
                     key: 'status', 
-                    render: (text, rowData) => <Switch checkedChildren='启用' unCheckedChildren='禁用' defaultChecked={rowData.status === '1' ? true : false} />
+                    render: (text, rowData) => <Switch 
+                        onChange={() => this.onHandlerSwitch(rowData)}
+                        checkedChildren='启用' 
+                        unCheckedChildren='禁用' 
+                        defaultChecked={rowData.status === '1' ? true : false} 
+                        />
                 },
                 { title: '人员数量', dataIndex: 'number', key: 'number'},
                 { 
@@ -27,7 +35,11 @@ class DepartmentList extends Component {
                     render: (text, rowData) => {
                         return (
                             <div className='inline-button'>
-                                <Button type='primary'>编辑</Button>
+                                <Button type='primary' /* onClick={() => this.onHandlerEdit(rowData.id)} */>
+                                    <Link to={{pathname: '/index/department/add', state: {id: rowData.id}}}>
+                                        编辑
+                                    </Link>
+                                    </Button>
                                 <Button onClick={() => this.onDelete(rowData.id)}>删除</Button>
                             </div>
                         )
@@ -77,14 +89,41 @@ class DepartmentList extends Component {
             selectedRowKeys
         })
     }
-    onDelete = (id) => {
-        deleteItem(id).then(response => {
-            message.info(response.data.message)
-            this.loadData()
+
+    onDelete(id) {
+        if (!id) return;
+        this.setState({
+            ...this.state,
+            visible: true,
+            id
         })
     }
+
+    hideModal = () => {
+        deleteItem({id:this.state.id}).then(response => {
+            message.info(response.data.message)
+            this.loadData()
+            this.setState({
+                ...this.state,
+                visible: false,
+                id: ''
+            })
+        })
+    }
+
+    onHandlerSwitch(data) {
+        if (!data.status) return;
+        const requestData = {
+            id: data.id,
+            status: data.status === '1' ? false : true
+        }
+        changeStatus(requestData).then(response => {
+            message.info(response.data.message)
+        })
+    }
+
     render() {
-        const { columns, data } = this.state
+        const { columns, data, visible } = this.state
         const rowSelection = {
             onChange: this.onCheckbox
         }
@@ -103,6 +142,16 @@ class DepartmentList extends Component {
                     </Form.Item>
                 </Form>
                 <Table rowSelection={rowSelection} rowKey='id' columns={columns} dataSource={data} bordered></Table>
+                <Modal
+                    title='系统提示'
+                    visible={visible}
+                    onOk={this.hideModal}
+                    onCancel={() => {this.setState({ ...this.state, visible: false})}}
+                    okText='确认'
+                    cancelText='取消'
+                >
+                    <p>确定删除此信息？删除后将无法恢复</p>
+                </Modal>
             </Fragment>
         );
     }
