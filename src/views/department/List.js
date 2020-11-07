@@ -11,6 +11,7 @@ class DepartmentList extends Component {
             pageSize: 10,
             keyWord: '',
             id: '',
+            switchId: '',            
             selectedRowKeys: [],
             visible: false,
             columns: [
@@ -19,7 +20,8 @@ class DepartmentList extends Component {
                     title: '禁启用', 
                     dataIndex: 'status', 
                     key: 'status', 
-                    render: (text, rowData) => <Switch 
+                    render: (text, rowData) => <Switch
+                        loading={rowData.id == this.state.switchId}
                         onChange={() => this.onHandlerSwitch(rowData)}
                         checkedChildren='启用' 
                         unCheckedChildren='禁用' 
@@ -117,8 +119,21 @@ class DepartmentList extends Component {
             id: data.id,
             status: data.status === '1' ? false : true
         }
+        this.setState({
+            ...this.state,
+            switchId: data.id
+        })
         changeStatus(requestData).then(response => {
             message.info(response.data.message)
+            this.setState({
+                ...this.state,
+                switchId: ''
+            })  
+        }).catch(() => {
+            this.setState({
+                ...this.state,
+                switchId: ''
+            })
         })
     }
 
