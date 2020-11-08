@@ -1,7 +1,8 @@
 import { Button, Form, Input, Switch, Table, message, Modal } from 'antd';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getList, deleteItem, changeStatus } from '../../api/department';
+import { getList, deleteItem, changeStatus } from '../../api/department'
+import TableComponent from './../../components/tableData/index';
 
 class DepartmentList extends Component {
     constructor(props){
@@ -156,7 +157,8 @@ class DepartmentList extends Component {
                         <Button type='primary' htmlType='submit'>搜索</Button>
                     </Form.Item>
                 </Form>
-                <Table rowSelection={rowSelection} rowKey='id' columns={columns} dataSource={data} bordered></Table>
+                <TableComponent columns={columns} rowSelection={rowSelection} rowKey='id'  dataSource={data} bordered /> 
+                <Table ></Table>
                 <Modal
                     title='系统提示'
                     visible={visible}
