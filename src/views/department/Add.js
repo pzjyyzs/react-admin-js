@@ -28,7 +28,6 @@ class DepartmentAdd extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.location.state.name)
         this.getDetail()
     }
 

@@ -1,5 +1,5 @@
 import { Button, Form, Input, Switch, Table, message, Modal } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { getList, deleteItem, changeStatus } from '../../api/department'
 import TableComponent from './../../components/tableData/index';
@@ -15,66 +15,50 @@ class DepartmentList extends Component {
             switchId: '',            
             selectedRowKeys: [],
             visible: false,
-            columns: [
-                { title: '部门名称', dataIndex: 'name', key: 'name'},
-                { 
-                    title: '禁启用', 
-                    dataIndex: 'status', 
-                    key: 'status', 
-                    render: (text, rowData) => <Switch
-                        loading={rowData.id == this.state.switchId}
-                        onChange={() => this.onHandlerSwitch(rowData)}
-                        checkedChildren='启用' 
-                        unCheckedChildren='禁用' 
-                        defaultChecked={rowData.status === '1' ? true : false} 
-                        />
-                },
-                { title: '人员数量', dataIndex: 'number', key: 'number'},
-                { 
-                    title: '操作', 
-                    dataIndex: 'operation', 
-                    key: 'operation', 
-                    width: 215,
-                    render: (text, rowData) => {
-                        return (
-                            <div className='inline-button'>
-                                <Button type='primary' /* onClick={() => this.onHandlerEdit(rowData.id)} */>
-                                    <Link to={{pathname: '/index/department/add', state: {id: rowData.id}}}>
-                                        编辑
-                                    </Link>
-                                    </Button>
-                                <Button onClick={() => this.onDelete(rowData.id)}>删除</Button>
-                            </div>
-                        )
-                    }
-                },
-            ],
-            data: []
+            data: [],
+            tableConfig: {
+                url: 'departmentList',
+                method: 'post',
+                checkbox: true,
+                rowKey:'id',
+                thead: [
+                    { title: '部门名称', dataIndex: 'name', key: 'name'},
+                    { 
+                        title: '禁启用', 
+                        dataIndex: 'status', 
+                        key: 'status', 
+                        render: (text, rowData) => <Switch
+                            loading={rowData.id === this.state.switchId}
+                            onChange={() => this.onHandlerSwitch(rowData)}
+                            checkedChildren='启用' 
+                            unCheckedChildren='禁用' 
+                            defaultChecked={rowData.status === '1' ? true : false} 
+                            />
+                    },
+                    { title: '人员数量', dataIndex: 'number', key: 'number'},
+                    { 
+                        title: '操作', 
+                        dataIndex: 'operation', 
+                        key: 'operation', 
+                        width: 215,
+                        render: (text, rowData) => {
+                            return (
+                                <div className='inline-button'>
+                                    <Button type='primary' /* onClick={() => this.onHandlerEdit(rowData.id)} */>
+                                        <Link to={{pathname: '/index/department/add', state: {id: rowData.id}}}>
+                                            编辑
+                                        </Link>
+                                        </Button>
+                                    <Button onClick={() => this.onDelete(rowData.id)}>删除</Button>
+                                </div>
+                            )
+                        }
+                    },
+                ]
+            }
         }
-    }
-    
-    componentDidMount() {
-        this.loadData()
     }
 
-    loadData = () => {
-        const requestData = {
-            pageNumber: this.state.pageNumber,
-            pageSize: this.state.pageSize
-        }
-        if (this.state.keyWord) {
-            requestData.name = this.state.keyWord
-        }
-        getList(requestData).then(response => {
-             const data = response.data.data
-             if (data) {
-                 this.setState({
-                     ...this.state,
-                     data: data.data
-                 })
-             }
-        })
-    }
 
     onFinish = (value) => {
         this.setState({
@@ -157,8 +141,7 @@ class DepartmentList extends Component {
                         <Button type='primary' htmlType='submit'>搜索</Button>
                     </Form.Item>
                 </Form>
-                <TableComponent columns={columns} rowSelection={rowSelection} rowKey='id'  dataSource={data} bordered /> 
-                <Table ></Table>
+                <TableComponent config={this.state.tableConfig} /> 
                 <Modal
                     title='系统提示'
                     visible={visible}
