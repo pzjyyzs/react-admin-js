@@ -27,6 +27,7 @@ class DepartmentList extends Component {
                         title: '禁启用', 
                         dataIndex: 'status', 
                         key: 'status', 
+                        batchButton: false,
                         render: (text, rowData) => <Switch
                             loading={rowData.id === this.state.switchId}
                             onChange={() => this.onHandlerSwitch(rowData)}

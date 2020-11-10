@@ -9,3 +9,7 @@ body {
 .inline-button {
     button + button { margin-left: 10px; }
 }
+
+.pull-right {
+    float: right;
+}
