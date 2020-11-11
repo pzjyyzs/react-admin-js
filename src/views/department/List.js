@@ -1,7 +1,7 @@
-import { Button, Form, Input, Switch, Table, message, Modal } from 'antd';
+import { Button, Form, Input, Switch, message } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { getList, deleteItem, changeStatus } from '../../api/department'
+import {  changeStatus } from '../../api/department'
 import TableComponent from './../../components/tableData/index';
 
 class DepartmentList extends Component {
@@ -12,9 +12,7 @@ class DepartmentList extends Component {
             pageSize: 10,
             keyWord: '',
             id: '',
-            switchId: '',            
-            selectedRowKeys: [],
-            visible: false,
+            switchId: '',
             data: [],
             tableConfig: {
                 url: 'departmentList',
@@ -60,6 +58,9 @@ class DepartmentList extends Component {
         }
     }
 
+    getChildRef = (ref) => {
+        this.tableComponent = ref
+    }
 
     onFinish = (value) => {
         this.setState({
@@ -71,33 +72,10 @@ class DepartmentList extends Component {
         this.loadData()
     }
 
-    onCheckbox = (selectedRowKeys) => {
-        this.setState({
-            ...this.state,
-            selectedRowKeys
-        })
-    }
-
     onDelete(id) {
-        if (!id) return;
-        this.setState({
-            ...this.state,
-            visible: true,
-            id
-        })
+       this.tableComponent.onHandlerDelete(id)
     }
 
-    hideModal = () => {
-        deleteItem({id:this.state.id}).then(response => {
-            message.info(response.data.message)
-            this.loadData()
-            this.setState({
-                ...this.state,
-                visible: false,
-                id: ''
-            })
-        })
-    }
 
     onHandlerSwitch(data) {
         if (!data.status) return;
@@ -124,10 +102,6 @@ class DepartmentList extends Component {
     }
 
     render() {
-        const { columns, data, visible } = this.state
-        const rowSelection = {
-            onChange: this.onCheckbox
-        }
         return (
             <Fragment>
                 <Form layout='inline' onFinish={this.onFinish}>
@@ -142,17 +116,7 @@ class DepartmentList extends Component {
                         <Button type='primary' htmlType='submit'>搜索</Button>
                     </Form.Item>
                 </Form>
-                <TableComponent config={this.state.tableConfig} /> 
-                <Modal
-                    title='系统提示'
-                    visible={visible}
-                    onOk={this.hideModal}
-                    onCancel={() => {this.setState({ ...this.state, visible: false})}}
-                    okText='确认'
-                    cancelText='取消'
-                >
-                    <p>确定删除此信息？删除后将无法恢复</p>
-                </Modal>
+                <TableComponent onRef={this.getChildRef} config={this.state.tableConfig} /> 
             </Fragment>
         );
     }

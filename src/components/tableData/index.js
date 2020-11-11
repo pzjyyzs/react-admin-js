@@ -14,12 +14,16 @@ class TableComponent extends Component {
             keyWork: '',
             data: [],
             loadingData: false,
-            total: 0
+            total: 0,
+            checkboxValue: [],
+            modalVisible: false,
+            modalconfirmLoading: false
         }
     }
 
     componentDidMount() {
         this.loadData()
+        this.props.onRef(this)
     }
 
     loadData = () => {
@@ -57,10 +61,10 @@ class TableComponent extends Component {
         })
     }
 
-    onCheckbox = (selectedRowKeys) => {
+    onCheckbox = (checkboxValue) => {
         this.setState({
             ...this.state,
-            selectedRowKeys
+            checkboxValue
         })
     }
 
@@ -83,9 +87,44 @@ class TableComponent extends Component {
         })
     }
 
+    hideModal = () => {
+        if (this.state.checkboxValue.length === 0) {
+            message.info('请选择需要删除的数据');
+            return false;
+        }
+        this.setState({
+            ...this.state,
+            confirmLoading: true
+        })
+        const id = this.state.checkboxValue.join();
+        const requestData = {
+            url: requestUrl[`${this.props.config.url}Delete`],
+            data: {
+                id
+            }
+        }
+        tableList(requestData).then(response => {
+            message.info(response.data.message)
+            this.setState({
+                ...this.state,
+                modalVisible: false,
+                id: '',
+                modalconfirmLoading: false,
+                selectedRowKeys: []
+            })
+            this.loadData()
+        })
+    }
+
+    onHandlerDelete(id) {
+       this.setState({ modalVisible: true})
+       if (id){ this.setState({ checkboxValue: [id]})}
+
+    }
+
     render() {
         const { thead, checkbox,rowKey, batchButton } = this.props.config
-        const { data, loadingData, total } = this.state
+        const { data, loadingData, total, modalVisible, modalconfirmLoading } = this.state
 
         const rowSelection = {
             onChange: this.onCheckbox
@@ -95,7 +134,7 @@ class TableComponent extends Component {
                 <Table pagination={false} loading={loadingData} rowKey={rowKey || 'id'} columns={thead} rowSelection={checkbox ? rowSelection : null} dataSource={data} bordered></Table>
                 <Row>
                     <Col span={8}>
-                        {batchButton && <Button>批量删除</Button>}
+                        {batchButton && <Button onClick={() =>{this.onHandlerDelete()}}>批量删除</Button>}
                     </Col>
                     <Col span={16}>
                         <Pagination
@@ -110,6 +149,17 @@ class TableComponent extends Component {
                         />
                     </Col>
                 </Row>
+                <Modal
+                    title='系统提示'
+                    visible={modalVisible}
+                    onOk={this.hideModal}
+                    onCancel={() => {this.setState({ ...this.state, modalVisible: false})}}
+                    okText='确认'
+                    cancelText='取消'
+                    confirmLoading={modalconfirmLoading}
+                >
+                    <p>确定删除此信息？删除后将无法恢复</p>
+                </Modal>
             </Fragment>
         );
     }
