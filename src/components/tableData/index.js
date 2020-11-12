@@ -4,6 +4,7 @@ import { deleteItem, changeStatus } from '../../api/department'
 import requestUrl from '../../api/requestUrl';
 import { tableList } from './../../api/common';
 import PropTypes from 'prop-types';
+import TableBasis from './Table';
 
 class TableComponent extends Component {
     constructor(props) {
@@ -131,6 +132,7 @@ class TableComponent extends Component {
         }
         return (
             <Fragment>
+                <TableBasis columns={thead} dataSource={data}></TableBasis>
                 <Table pagination={false} loading={loadingData} rowKey={rowKey || 'id'} columns={thead} rowSelection={checkbox ? rowSelection : null} dataSource={data} bordered></Table>
                 <Row>
                     <Col span={8}>
