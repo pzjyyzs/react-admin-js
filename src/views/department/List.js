@@ -20,7 +20,14 @@ class DepartmentList extends Component {
                 checkbox: true,
                 rowKey:'id',
                 thead: [
-                    { title: '部门名称', dataIndex: 'name', key: 'name'},
+                    { 
+                        title: '部门名称', 
+                        dataIndex: 'name', 
+                        key: 'name',
+                        render: (name) => {
+                            return <a>{name}</a>
+                        }
+                    },
                     { 
                         title: '禁启用', 
                         dataIndex: 'status', 
@@ -104,18 +111,6 @@ class DepartmentList extends Component {
     render() {
         return (
             <Fragment>
-                <Form layout='inline' onFinish={this.onFinish}>
-                    <Form.Item
-                        label='部门名称'
-                        name='username'
-                        rules={[{required: true, message: '请输入部门名称'}]}
-                    >
-                        <Input placeholder='请输入部门名称' />
-                    </Form.Item>
-                    <Form.Item shouldUpdate={true}>
-                        <Button type='primary' htmlType='submit'>搜索</Button>
-                    </Form.Item>
-                </Form>
                 <TableComponent onRef={this.getChildRef} config={this.state.tableConfig} /> 
             </Fragment>
         );

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Button, Form, Input, Switch, Table, message, Modal, Pagination, Row, Col } from 'antd';
-import { deleteItem, changeStatus } from '../../api/department'
+import { Form,Input, message, Modal } from 'antd';
 import requestUrl from '../../api/requestUrl';
 import { tableList } from './../../api/common';
 import PropTypes from 'prop-types';
@@ -28,15 +27,16 @@ class TableComponent extends Component {
     }
 
     loadData = () => {
-        const { pageNumber, pageSize } =  this.state
+        const { pageNumber, pageSize, keyWork } =  this.state
         const requestData = {
             url:  requestUrl[this.props.config.url],
             method: this.props.config.method,
             data: {
                 pageNumber: pageNumber,
-                pageSize: pageSize
+                pageSize: pageSize,
             }
         }
+        if (keyWork) { requestData.data.name = keyWork}
         this.setState({
             ...this.state,
             loadingData: true
@@ -123,6 +123,16 @@ class TableComponent extends Component {
 
     }
 
+    onFinish = (value) => {
+        this.setState({
+            ...this.state,
+            keyWord: value.name,
+            pageNumber: 1,
+            pageSize: 10
+        })
+        this.loadData()
+    }
+
     render() {
         const { thead, checkbox,rowKey, batchButton } = this.props.config
         const { data, loadingData, total, modalVisible, modalconfirmLoading } = this.state
@@ -132,25 +142,28 @@ class TableComponent extends Component {
         }
         return (
             <Fragment>
-                <TableBasis columns={thead} dataSource={data}></TableBasis>
-                <Table pagination={false} loading={loadingData} rowKey={rowKey || 'id'} columns={thead} rowSelection={checkbox ? rowSelection : null} dataSource={data} bordered></Table>
-                <Row>
-                    <Col span={8}>
-                        {batchButton && <Button onClick={() =>{this.onHandlerDelete()}}>批量删除</Button>}
-                    </Col>
-                    <Col span={16}>
-                        <Pagination
-                            defaultCurrent={1}
-                            onChange={this.onChangeCurrentPage}
-                            onShowSizeChange={this.onChangeSizePage}
-                            className='pull-right'
-                            total={total}
-                            showSizeChanger
-                            showQuickJumper
-                            showTotal={total => `Total ${total} items`}
-                        />
-                    </Col>
-                </Row>
+                <Form layout='inline' onFinish={this.onFinish}>
+                    <Form.Item
+                        label='部门名称'
+                        name='username'
+                        rules={[{required: true, message: '请输入部门名称'}]}
+                    >
+                        <Input placeholder='请输入部门名称' />
+                    </Form.Item>
+                    <Form.Item shouldUpdate={true}>
+                        <Button type='primary' htmlType='submit'>搜索</Button>
+                    </Form.Item>
+                </Form>
+                <TableBasis 
+                    columns={thead} 
+                    dataSource={data}
+                    total={total}
+                    changePageCurrent={this.onChangeCurrentPage}
+                    changePageSize={this.changePageSize}
+                    handlerDelete={() => this.onHandlerDelete}
+                    rowSelection={checkbox ? rowSelection : null}
+                    rowKey={rowKey}
+                ></TableBasis>
                 <Modal
                     title='系统提示'
                     visible={modalVisible}
