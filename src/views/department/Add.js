@@ -19,7 +19,43 @@ class DepartmentAdd extends Component {
             formItem: [
                 { type: 'Input', label: '部门名称',name: 'name', rules: [
                     { required: true, message: '部门名称不能为空'}
-                ] }
+                ] },
+                {
+                    type: 'Select',
+                    label:'select',
+                    name: 'select',
+                    rules: [
+                        { required: true, }
+                    ],
+                    options: [
+                        { label: 'yanfabu', value: 'a'}
+                    ],
+                    placeholder: 'select'
+                },
+                {
+                    type: 'InputNumber',
+                    label: 'number',
+                    name: 'number',
+                    rules: [
+                        { required: true }
+                    ],
+                    style: { width: '200px'},
+                    placeholder: 'number',
+                    max: 100,
+                    min: 0
+                },
+                {
+                    type: 'Radio',
+                    label: '禁启用',
+                    name: 'statue',
+                    rules: [
+                        { required: true }
+                    ],
+                    options: [
+                        { label: 'stop', value: false },
+                        { label: 'start', value: true },
+                    ]
+                }
             ]
         }
         this.form = React.createRef();
@@ -46,16 +82,6 @@ class DepartmentAdd extends Component {
     }
 
     onSubmit = (value) => {
-
-        if(!value.name) {
-            message.error('部门名称不能为空')
-            return false
-        }
-
-        if (!value.number || value.number === 0) {
-            message.error('人员数量不能为空')
-            return false
-        }
         this.setState({
             ...this.state,
             loading: true
@@ -105,7 +131,7 @@ class DepartmentAdd extends Component {
         const {formLayout, loading, formItem} = this.state; 
         return (
             <Fragment>
-                <FormComponent formItem={formItem}></FormComponent>
+                <FormComponent formItem={formItem} formLayout={formLayout} onSubmit={this.onSubmit}></FormComponent>
                 <Form
                     ref={this.form}
                     {...formLayout}
