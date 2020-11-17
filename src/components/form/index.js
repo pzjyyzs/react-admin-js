@@ -7,6 +7,12 @@ class FormComponent extends Component {
         this.state = {}
     }
 
+    componentWillReceiveProps({ formConfig }) {
+        this.setState({
+            
+        })
+    }
+
     inputElem = (item) => {
         return (
             <Form.Item label={item.label} name={item.name} key={item.name} rules={item.rules || []}>
@@ -84,6 +90,7 @@ class FormComponent extends Component {
                 {...this.props.formLayout}
                 initialValues={{ status: true, number: 0}}
                 onFinish={this.onSubmit}
+                initialValues={this.props.formConfig.initValue}
             >
                 { this.initFormItem() }
                 <Form.Item>

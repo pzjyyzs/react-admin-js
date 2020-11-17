@@ -7,6 +7,12 @@ class DepartmentAdd extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            formConfig: {
+                initValue: {
+                    number: 0,
+                    statue: true
+                }
+            },
             formLayout: {
                 labelCol: {
                     span: 2
@@ -77,7 +83,14 @@ class DepartmentAdd extends Component {
         if (!this.props.location.state) return false;
         const id = this.props.location.state.id;
         departmentDetail({ id }).then(response => {
-            this.form.current.setFieldsValue(response.data.data)
+            this.setState({
+                ...this.state,
+                formConfig: {
+                    ...this.state.formConfig,
+                    initValue: response.data.data
+                }
+            })
+            //this.form.current.setFieldsValue(response.data.data)
         })
     }
 
@@ -128,10 +141,10 @@ class DepartmentAdd extends Component {
     }
 
     render() {
-        const {formLayout, loading, formItem} = this.state; 
+        const {formLayout, loading, formItem, formConfig} = this.state; 
         return (
             <Fragment>
-                <FormComponent formItem={formItem} formLayout={formLayout} onSubmit={this.onSubmit}></FormComponent>
+                <FormComponent formItem={formItem} formLayout={formLayout} onSubmit={this.onSubmit} formConfig={formConfig}></FormComponent>
                 <Form
                     ref={this.form}
                     {...formLayout}
