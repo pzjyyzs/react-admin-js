@@ -145,31 +145,6 @@ class DepartmentAdd extends Component {
         return (
             <Fragment>
                 <FormComponent formItem={formItem} formLayout={formLayout} onSubmit={this.onSubmit} formConfig={formConfig}></FormComponent>
-                <Form
-                    ref={this.form}
-                    {...formLayout}
-                    initialValues={{ status: true, number: 0}}
-                    onFinish={this.onSubmit}
-                >
-                    <Form.Item label='部门名称' name='name'>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item label='人员数量' name='number'>
-                        <InputNumber />
-                    </Form.Item>
-                    <Form.Item label='禁启用' name='status'>
-                        <Radio.Group >
-                            <Radio value={true}>启用</Radio>
-                            <Radio value={false}>禁用</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item label='描述' name='content'>
-                        <Input.TextArea />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button loading={loading} type='primary' htmlType='submit'>确定</Button>
-                    </Form.Item>
-                </Form>
             </Fragment>
         );
     }

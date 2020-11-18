@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import Store from './store/index';
+
+console.log(Store.getState())
 ReactDOM.render(
     <App />,
     document.getElementById('root')

@@ -23,7 +23,7 @@ class FormComponent extends Component {
 
     selectElem = (item) => {
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={item.rules}>
                 <Select style={item.style} placeholder={item.placeholder}>
                     {
                         item.options && item.options.map(elem  => {
@@ -37,7 +37,7 @@ class FormComponent extends Component {
 
     inputNumberElem = (item) => {
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={item.rules}>
                 <InputNumber min={item.min} max={item.max} />
             </Form.Item>
         )
@@ -45,7 +45,7 @@ class FormComponent extends Component {
 
     radioElem = (item) => {
         return (
-            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={item.rules}>
                 <Radio.Group>
                     {
                         item.options && item.options.map(item => {

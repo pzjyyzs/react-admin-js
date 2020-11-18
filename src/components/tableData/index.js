@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Form,Input, message, Modal } from 'antd';
+import { Form,Input, message, Modal,Button } from 'antd';
 import requestUrl from '../../api/requestUrl';
 import { tableList } from './../../api/common';
 import PropTypes from 'prop-types';
@@ -180,7 +180,7 @@ class TableComponent extends Component {
     }
 }
 
-TableComponent.PropTypes = {
+TableComponent.propTypes = {
     config: PropTypes.object 
 }
 
